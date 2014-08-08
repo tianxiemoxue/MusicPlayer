@@ -1,6 +1,6 @@
 /*
  * This file is auto-generated.  DO NOT MODIFY.
- * Original file: F:\\Android Application\\MusicPlayer\\src\\com\\example\\aidl\\IMediaService.aidl
+ * Original file: D:\\dev\\musicplayer\\MusicPlayer\\src\\com\\example\\aidl\\IMediaService.aidl
  */
 package com.example.aidl;
 public interface IMediaService extends android.os.IInterface
