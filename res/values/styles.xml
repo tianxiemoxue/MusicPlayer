@@ -16,5 +16,19 @@
     <style name="AppTheme" parent="AppBaseTheme">
         <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
+    
+    <style name="dialog_anim_slide_left"  parent="android:Animation" mce_bogus ="1">
+        <item name="android:windowExitAnimation">@anim/dialog_exit_slide_left</item>
+    </style>
+    
+    <style name="dialog_exit_slide_down" parent ="android:Animation" mce_bogus ="1">
+    	<item name ="android:windowExitAnimation">@anim/dialog_exit_slide_down</item>
+    </style>
+    
+    <style name ="dialog_exit_fade_out" parent ="android:Animation" mce_bogus="1">
+    	<item name="android:windowExitAnimation">@anim/dialog_exit_fade_out</item>
+    </style>
+        
+
 
 </resources>

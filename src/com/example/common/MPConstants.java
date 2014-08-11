@@ -18,6 +18,10 @@ public class MPConstants {
 	public static final String PLAY_STATE_NAME = "PLAY_STATE_NAME";
 	public static final String PLAY_MUSIC_INDEX = "PLAY_MUSIC_INDEX";
 	
+	public static final int START_FROM_ARTIST = 1;
+	public static final int START_FROM_ALBUM = 2;
+	public static final int START_FROM_LOCAL = 3;
+	public static final int START_FROM_FOLDER = 4;
 	
 
 }

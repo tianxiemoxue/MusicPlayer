@@ -8,6 +8,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.example.common.MPConstants;
 import com.example.model.MusicInfo;
 
 public class MusicInfoDao {
@@ -77,6 +78,18 @@ public class MusicInfoDao {
 		return list;
 	}
 	
+	public List<MusicInfo> getMusicInfoByType(String selection, int type){
+		SQLiteDatabase db = DatabaseHelper.getInstance(context);
+		String sql = "";
+		if(type == MPConstants.START_FROM_ARTIST) {
+			sql = "select * from " + TABLE_MUSIC + " where artist = ?";
+		} else if(type == MPConstants.START_FROM_ALBUM) {
+			sql = "select * from " + TABLE_MUSIC + " where albumid = ?";
+		} else if(type == MPConstants.START_FROM_FOLDER) {
+			sql = "select * from " + TABLE_MUSIC + " where folder = ?";
+		}
+		return parseCursor(db.rawQuery(sql, new String[]{ selection }));
+	}
 	public boolean hasData()
 	{
 		SQLiteDatabase db = DatabaseHelper.getInstance(context);
