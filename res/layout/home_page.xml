@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" 
+    android:background="#ffffff">
+
+   <include
+       layout="@layout/header" />
+   <View
+       android:layout_width="match_parent"
+       android:layout_height="1dp"
+       android:background="#e7e7e7"/>
+   <GridView 
+       android:id="@+id/gvMusicFile"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content"
+       android:horizontalSpacing="1dp"
+       android:verticalSpacing="1dp"
+       android:background="#e7e7e7"
+       android:numColumns="2">
+   </GridView>
+   <View
+       android:layout_width="match_parent"
+       android:layout_height="1dp"
+       android:background="#e7e7e7"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="3dp"
+            android:paddingBottom="3dp"
+            android:layout_gravity="center_vertical">
+
+            	<TextView
+            	    android:layout_width="wrap_content"
+            	    android:layout_height="wrap_content"
+            	    android:layout_alignParentLeft="true"
+            	    android:layout_marginLeft="15dp"
+            	    android:layout_centerVertical="true"
+            	    android:text="我的歌单"
+            	    android:textColor="#6b6b6b"
+            	    android:textSize="12sp" />
+            	<TextView
+            	    android:id="@+id/tvAddPlayList"
+            	    android:layout_width="wrap_content"
+            	    android:layout_height="wrap_content"
+            	    android:layout_alignParentRight="true"
+            	    android:layout_marginRight="15dp"
+            	    android:layout_centerVertical="true"
+            	    android:text="+"
+            	    android:textColor="#000000"
+            	    android:textSize="20sp" />
+
+        </RelativeLayout>
+        	<ListView
+            	    android:id="@+id/playList"
+            	    android:layout_width="match_parent"
+            	    android:layout_height="wrap_content"
+            	    android:divider="#c4c4c4"
+            	    android:dividerHeight="0.5dp">
+            	</ListView>
+    </LinearLayout>
+    
+
+</LinearLayout>

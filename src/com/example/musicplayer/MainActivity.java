@@ -8,6 +8,7 @@ import android.view.Menu;
 
 import com.example.Utils.MusicUtils;
 import com.example.Utils.SlashScreen;
+import com.example.common.MPConstants;
 import com.example.db.MusicInfoDao;
 import com.example.fragment.MainFragment;
 
@@ -20,6 +21,7 @@ public class MainActivity extends FragmentActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		musicInfoDao = new MusicInfoDao(this);
 		
 		slashScreen = new SlashScreen(this);
 		slashScreen.show(R.drawable.lanucher_background, SlashScreen.SLASH_FADE_OUT);
@@ -35,27 +37,29 @@ public class MainActivity extends FragmentActivity {
 			}
 		};
 		
+		getData();
+		
 	}
 
 	private void getData(){
-		new Runnable() {
+		Runnable runnable = new Runnable() {
 			
 			public void run() {
 				if(musicInfoDao.hasData()){
 					mHandler.sendMessageDelayed(mHandler.obtainMessage(), 3000);
 				}else{
 					MusicUtils.queryMusic(MainActivity.this,
-							START_FROM_LOCAL);
+							MPConstants.START_FROM_LOCAL);
 					MusicUtils.queryAlbums(MainActivity.this);
 					MusicUtils.queryArtist(MainActivity.this);
 					MusicUtils.queryFolder(MainActivity.this);
+					MusicUtils.queryPlayList(MainActivity.this);
 					mHandler.sendEmptyMessage(1);
-					
-					
 				}
 				
 			}
 		};
+		new Thread(runnable).start();
 	}
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {

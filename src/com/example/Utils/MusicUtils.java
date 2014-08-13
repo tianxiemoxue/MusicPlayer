@@ -120,15 +120,15 @@ public class MusicUtils {
 
 	}
 	
-	public static List<AlbumInfo> queyAlbums(Context context){
+	public static List<AlbumInfo> queryAlbums(Context context){
 		if(albumInfoDao == null){
 			albumInfoDao = new AlbumInfoDao(context);
 		}
 		Uri uri = Albums.EXTERNAL_CONTENT_URI;
 		ContentResolver cr = context.getContentResolver();
 		StringBuilder where = new StringBuilder(Albums._ID 
-				+"in (select distinct " + Albums._ID 
-				+ "from autio_meta where (1=1 " );
+				+" in (select distinct " + Albums._ID 
+				+ " from audio_meta where (1=1 " );
 		where.append(" and " + Media.SIZE +" > " + FILTER_SIZE);
 		where.append(" and " + Media.DURATION +" > " + FILTER_DURATION);
 		where.append("))");

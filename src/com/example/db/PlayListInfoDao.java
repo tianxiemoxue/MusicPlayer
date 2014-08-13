@@ -26,7 +26,7 @@ public class PlayListInfoDao {
 		ContentValues cv = new ContentValues();
 		cv.put("list_name", playList.name);
 		db.insert(TABLE_PLAYERLIST, null, cv);
-		String sql = "SELECT _id FROM" + TABLE_PLAYERLIST +
+		String sql = "SELECT _id FROM " + TABLE_PLAYERLIST +
 				"WHERE list_name = '" +playList.name +"'";
 		Cursor cursor = db.rawQuery(sql, null);
 		int list_id = -1;
@@ -48,7 +48,7 @@ public class PlayListInfoDao {
 	{
 		SQLiteDatabase db = DatabaseHelper.getInstance(context);
 		List<PlayListInfo> infoList = new ArrayList<PlayListInfo>();
-		String sql = "SELECT * FROM" + TABLE_PLAYERLIST ;
+		String sql = "SELECT * FROM " + TABLE_PLAYERLIST ;
 		MusicInfoDao musicInfoDao = new MusicInfoDao(context);
 		Cursor cursor = db.rawQuery(sql, null);
 		while(cursor.moveToNext())

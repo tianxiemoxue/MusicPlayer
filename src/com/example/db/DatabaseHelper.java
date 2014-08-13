@@ -43,7 +43,7 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 
 	@Override
 	public void onCreate(SQLiteDatabase db) {
-		db.execSQL("CREATE TABLE"
+		db.execSQL("CREATE TABLE "
 				+ TABLE_MUSIC
 				+"(_id INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+"songid integer," +"albumid integer,"
@@ -51,28 +51,28 @@ public class DatabaseHelper extends SQLiteOpenHelper{
 				+"artist char,"+"data char," +"folder char," 
 				+"musicnamekey char, "+"artistkey char)" 
 				);
-		db.execSQL("CREATE TABLE"
+		db.execSQL("CREATE TABLE "
 				+TABLE_ALBUM
 				+"(_id INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+"album_name char, album_id integer, number_of_songs integer,"
 				+"album_art char)"
 				);
-		db.execSQL("CREATE TABLE"
+		db.execSQL("CREATE TABLE "
 				+TABLE_ARTIST
 				+"(_id INTEGER PRIMARY KEY AUTOINCREMENT, artist_name char," +
 				"number_of_tracks integer)"
 				);
-		db.execSQL("CREATE TABLE"
+		db.execSQL("CREATE TABLE "
 				+TABLE_FOLDER
 				+"(_id INTEGER PRIMARY KEY AUTOINCREMENT, folder_name varchar(20),"
 				+"folder_path char)"
 				);
-		db.execSQL("CREATE TABLE"
+		db.execSQL("CREATE TABLE "
 				+TABLE_PLAYERLIST
 				+"(_id INTEGER PRIMARY KEY AUTOINCREMENT,"
 				+"list_name varchar(20))"
 				);
-		db.execSQL("CREATE TABLE"
+		db.execSQL("CREATE TABLE "
 				+TABLE_LISTDETAIL
 				+"(list_id Integer not null,"
 				+"song_id Integer not null,"

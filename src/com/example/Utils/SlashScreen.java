@@ -74,7 +74,7 @@ public class SlashScreen {
 	}
 	
 	public void removeSlashScreen(){
-		if(slashDialog != null &&slashDialog.isShowing()){
+		if(slashDialog != null && slashDialog.isShowing()){
 			slashDialog.dismiss();
 			slashDialog = null;
 		}
