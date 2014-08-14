@@ -268,5 +268,10 @@ public class ServiceManager {
 		}
 	}
 	
+	public void setOnServiceConnectComplete(
+			IOnServiceConnectComplete IServiceConnect) {
+		mIOnServiceConnectComplete = IServiceConnect;
+	}
+	
 
 }

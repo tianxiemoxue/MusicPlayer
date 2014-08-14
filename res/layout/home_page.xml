@@ -1,69 +1,118 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical" 
-    android:background="#ffffff">
+    android:background="#ffffff"
+    android:orientation="vertical" >
 
-   <include
-       layout="@layout/header" />
-   <View
-       android:layout_width="match_parent"
-       android:layout_height="1dp"
-       android:background="#e7e7e7"/>
-   <GridView 
-       android:id="@+id/gvMusicFile"
-       android:layout_width="match_parent"
-       android:layout_height="wrap_content"
-       android:horizontalSpacing="1dp"
-       android:verticalSpacing="1dp"
-       android:background="#e7e7e7"
-       android:numColumns="2">
-   </GridView>
-   <View
-       android:layout_width="match_parent"
-       android:layout_height="1dp"
-       android:background="#e7e7e7"/>
+    <include
+        android:id="@+id/home_header" 
+        android:layout_alignParentTop="true"
+        layout="@layout/header" />
+
     <LinearLayout
+        android:layout_below="@+id/home_header"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical" >
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e7e7e7" />
+        <!-- grid view -->
+
+        <GridView
+            android:id="@+id/gvMusicFile"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#e7e7e7"
+            android:horizontalSpacing="1dp"
+            android:numColumns="2"
+            android:verticalSpacing="1dp" >
+        </GridView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#e7e7e7" />
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="3dp"
+            android:layout_gravity="center_vertical"
             android:paddingBottom="3dp"
-            android:layout_gravity="center_vertical">
+            android:paddingTop="3dp" >
 
-            	<TextView
-            	    android:layout_width="wrap_content"
-            	    android:layout_height="wrap_content"
-            	    android:layout_alignParentLeft="true"
-            	    android:layout_marginLeft="15dp"
-            	    android:layout_centerVertical="true"
-            	    android:text="我的歌单"
-            	    android:textColor="#6b6b6b"
-            	    android:textSize="12sp" />
-            	<TextView
-            	    android:id="@+id/tvAddPlayList"
-            	    android:layout_width="wrap_content"
-            	    android:layout_height="wrap_content"
-            	    android:layout_alignParentRight="true"
-            	    android:layout_marginRight="15dp"
-            	    android:layout_centerVertical="true"
-            	    android:text="+"
-            	    android:textColor="#000000"
-            	    android:textSize="20sp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_centerVertical="true"
+                android:layout_marginLeft="15dp"
+                android:text="我的歌单"
+                android:textColor="#6b6b6b"
+                android:textSize="12sp" />
 
+            <TextView
+                android:id="@+id/tvAddPlayList"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:layout_marginRight="15dp"
+                android:paddingLeft="10dp"
+                android:paddingRight="10dp"
+                android:text="+"
+                android:textColor="#000000"
+                android:textSize="20sp" />
         </RelativeLayout>
-        	<ListView
-            	    android:id="@+id/playList"
-            	    android:layout_width="match_parent"
-            	    android:layout_height="wrap_content"
-            	    android:divider="#c4c4c4"
-            	    android:dividerHeight="0.5dp">
-            	</ListView>
-    </LinearLayout>
-    
 
-</LinearLayout>
+        <ListView
+            android:id="@+id/playList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:divider="#c4c4c4"
+            android:dividerHeight="0.5dp" >
+        </ListView>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="0.5dp"
+            android:layout_marginLeft="15dp"
+            android:background="#e7e7e7" />
+
+        <LinearLayout
+            android:id="@+id/btnAddPlayList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal" >
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="120dp"
+                android:contentDescription="add icon"
+                android:src="@drawable/icon_add" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:text="新建歌单"
+                android:textColor="#228ee6"
+                android:textSize="14sp" />
+        </LinearLayout>
+    </LinearLayout>
+    <RelativeLayout
+        android:layout_alignParentBottom="true"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <include
+	    	layout="@layout/bottom_play_control" />
+     </RelativeLayout>
+	
+</RelativeLayout>

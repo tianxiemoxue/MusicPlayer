@@ -20,6 +20,13 @@ public class PlayListInfo implements Parcelable{
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	public int getCount(){
+		int count = 0;
+		if(music_list != null)
+			count = music_list.size();
+		return count;
+	}
 
 	@Override
 	public void writeToParcel(Parcel dest, int flags) {

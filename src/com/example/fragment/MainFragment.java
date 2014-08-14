@@ -1,30 +1,44 @@
 package com.example.fragment;
 
-import android.R.integer;
 import android.app.Fragment;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.BaseAdapter;
 import android.widget.GridView;
-import android.widget.ImageView;
-import android.widget.TextView;
+import android.widget.ListView;
 
+import com.example.UIManager.BottomMusicUIMgr;
+import com.example.adapter.MusicFileAdapter;
+import com.example.aidl.IMediaService;
+import com.example.common.MPConstants;
 import com.example.db.AlbumInfoDao;
 import com.example.db.ArtistInfoDao;
 import com.example.db.FolderInfoDao;
 import com.example.db.MusicInfoDao;
-import com.example.model.AlbumInfo;
+import com.example.db.PlayListInfoDao;
+import com.example.interfaces.IOnServiceConnectComplete;
+import com.example.model.MusicInfo;
+import com.example.musicplayer.MusicPlayerApplication;
 import com.example.musicplayer.R;
+import com.example.service.ServiceManager;
 
-public class MainFragment extends Fragment {
+public class MainFragment extends Fragment implements IOnServiceConnectComplete {
 	private GridView mGridView;
+	private ListView playList;
 	private MusicFileAdapter mfAdapter;
 	private MusicInfoDao musicInfoDao;
 	private ArtistInfoDao artistInfoDao;
 	private FolderInfoDao folderInfoDao;
 	private AlbumInfoDao albumInfoDao;
+	private PlayListInfoDao playListInfoDao;
+	private ServiceManager serviceManager;
+	private BottomMusicUIMgr btmMusicUIMgr;
+	private MusicPlayControlBroadCast controlBroadCast;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
@@ -33,17 +47,28 @@ public class MainFragment extends Fragment {
 		albumInfoDao = new AlbumInfoDao(getActivity());
 		artistInfoDao = new ArtistInfoDao(getActivity());
 		folderInfoDao = new FolderInfoDao(getActivity());
+		playListInfoDao = new PlayListInfoDao(getActivity());
+		serviceManager = MusicPlayerApplication.mServiceManager;
 	}
 	
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View view = inflater.inflate(R.layout.home_page, null);
-		mGridView = (GridView)view.findViewById(R.id.gvMusicFile);
-		mfAdapter = new MusicFileAdapter();
-		mGridView.setAdapter(mfAdapter);
-		return view;
 		
+		mGridView = (GridView)view.findViewById(R.id.gvMusicFile);
+		mfAdapter = new MusicFileAdapter(getActivity());
+		mGridView.setAdapter(mfAdapter);
+		
+		playList = (ListView)view.findViewById(R.id.playList);
+		btmMusicUIMgr = new BottomMusicUIMgr(getActivity()); 
+		serviceManager.connectService();
+		serviceManager.setOnServiceConnectComplete(this);
+		controlBroadCast = new MusicPlayControlBroadCast();
+		IntentFilter filter = new IntentFilter(MPConstants.BROADCAST_NAME);
+		filter.addAction(MPConstants.BROADCAST_NAME);
+		getActivity().registerReceiver(controlBroadCast, filter);
+		return view;
 	}
 	
 	@Override
@@ -56,80 +81,43 @@ public class MainFragment extends Fragment {
 		 int song_num = musicInfoDao.getCount();
 		 int album_num = albumInfoDao.getDataCount();
 		 int artist_num = artistInfoDao.getDataCount();
-		 int folder_num = artistInfoDao.getDataCount();
+		 int folder_num = folderInfoDao.getDataCount();
 		 mfAdapter.setNum(song_num, album_num, artist_num, folder_num);
 	}
 	
-	private class MusicFileAdapter extends BaseAdapter{
-		private final String[] typeName = new String[]{"本地音乐", "音乐专辑", "音乐人", "文件夹"};
-		private int[] drawable = new int[]{R.drawable.icon_local_music, R.drawable.icon_music_album,
-				R.drawable.icon_music_player, R.drawable.icon_local_folder};
-		private int song_num;
-		private int album_num;
-		private int artist_num;
-		private int folder_num;
-		
-		public void setNum(int songNum, int albumNum, int artistNum, int folderNum){
-			this.song_num = songNum;
-			this.album_num = albumNum;
-			this.artist_num = artistNum;
-			this.folder_num = folderNum;
-			notifyDataSetChanged();
-			
-		}
-		@Override
-		public int getCount() {
-			return typeName.length;
-		}
+	private class MusicPlayControlBroadCast extends BroadcastReceiver{
 
 		@Override
-		public Object getItem(int position) {
-			return null;
-		}
-
-		@Override
-		public long getItemId(int position) {
-			return position;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			ViewHolder vh = null;
-			if(convertView == null){
-				convertView = getActivity().getLayoutInflater().inflate(R.layout.muisc_file_item, null);
-				vh = new ViewHolder();
-				vh.tvSong_Num = (TextView)convertView.findViewById(R.id.item_num);
-				vh.imgItem_Icon = (ImageView)convertView.findViewById(R.id.item_icon);
-				vh.tvItem_Name = (TextView)convertView.findViewById(R.id.item_name);
-			}else {
-				vh = (ViewHolder)convertView.getTag();
-			}
-			switch (position) {
-			case 0:// 我的音乐
-				vh.tvSong_Num.setText(song_num + "首");
-				break;
-			case 1:// 音乐专辑
-				vh.tvSong_Num.setText(album_num + "张");
-				break;
-			case 2:// 艺术家
-				vh.tvSong_Num.setText(artist_num + "位");
-				break;
-			case 3:// 文件夹
-				vh.tvSong_Num.setText(folder_num + "");
-				break;
+		public void onReceive(Context context, Intent intent) {
+			if(intent.getAction().equals(MPConstants.BROADCAST_NAME)){
+				int curPlayIndex = intent.getIntExtra(MPConstants.PLAY_MUSIC_INDEX, -1);
+				int curPlayState = intent.getIntExtra(MPConstants.PLAY_STATE_NAME, -1);
+				Bundle bundle = intent.getBundleExtra(MusicInfo.KEY_MUSIC);
+				MusicInfo musicInfo = new MusicInfo();
+				if(bundle != null){
+					musicInfo = bundle.getParcelable(MusicInfo.KEY_MUSIC);
 				}
-			vh.imgItem_Icon.setImageResource(drawable[position]);
-			vh.tvItem_Name.setText(typeName[position]);
-			
-			convertView.setTag(vh);
-			return convertView; 
+				btmMusicUIMgr.refreshUI(musicInfo);
+				switch(curPlayState){
+				case MPConstants.MPS_NOFILE:
+					btmMusicUIMgr.showPlay(true);
+					break;
+				case MPConstants.MPS_INVALID:
+					btmMusicUIMgr.showPlay(true);
+					break;
+				case MPConstants.MPS_PAUSE:
+					btmMusicUIMgr.showPlay(true);
+					break;
+				case MPConstants.MPS_PLAYING:
+					btmMusicUIMgr.showPlay(false);
+					break;
+				}
+			}
 		}
 		
-		private class ViewHolder{
-			TextView tvSong_Num;
-			ImageView imgItem_Icon;
-			TextView tvItem_Name;
-		}
-		
+	}
+	@Override
+	public void onServiceConnectComplete(IMediaService service) {
+		refreshNum();
 	}
 }

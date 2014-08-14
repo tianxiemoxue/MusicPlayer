@@ -1,5 +1,6 @@
 package com.example.Utils;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,7 @@ import android.provider.MediaStore.Audio.Albums;
 import android.provider.MediaStore.Audio.Media;
 import android.provider.MediaStore.Files.FileColumns;
 import android.text.TextUtils;
+import android.util.Log;
 
 import com.example.common.MPConstants;
 import com.example.db.AlbumInfoDao;
@@ -127,16 +129,18 @@ public class MusicUtils {
 		Uri uri = Albums.EXTERNAL_CONTENT_URI;
 		ContentResolver cr = context.getContentResolver();
 		StringBuilder where = new StringBuilder(Albums._ID 
-				+" in (select distinct " + Albums._ID 
+				+" in (select distinct " + Media.ALBUM_ID 
 				+ " from audio_meta where (1=1 " );
 		where.append(" and " + Media.SIZE +" > " + FILTER_SIZE);
 		where.append(" and " + Media.DURATION +" > " + FILTER_DURATION);
 		where.append("))");
 		
 		if(albumInfoDao.hasData()){
+			Log.e("MusicUtils", "---->> albumInfoDao has data!");
 			return albumInfoDao.getAlbumInfo();
 		}else{
-			List<AlbumInfo> list = getAlbumList(cr.query(uri, proj_album, where.toString(), null, Albums.ALBUM_KEY));
+			List<AlbumInfo> list = getAlbumList(cr.query(uri, proj_album, where.toString(), null, Media.ALBUM_KEY));
+			Log.e("MusicUtils", "---->> albumInfoDao has data" + albumInfoDao.hasData());
 			albumInfoDao.saveAlbumInfo(list);
 			return list;
 		}
@@ -197,11 +201,19 @@ public class MusicUtils {
 	public static List<AlbumInfo> getAlbumList(Cursor cursor){
 		List<AlbumInfo> list = new ArrayList<AlbumInfo>();
 		while(cursor.moveToNext()) {
+			Log.e("MusicUtils", "---->> has result!" );
 			AlbumInfo info = new AlbumInfo();
-			info.album_name = cursor.getString(cursor.getColumnIndex("album_name"));
-			info.album_art = cursor.getString(cursor.getColumnIndex("album_art"));
-			info.album_id = cursor.getInt(cursor.getColumnIndex("album_id"));
-			info.number_of_songs = cursor.getInt(cursor.getColumnIndex("number_of_songs"));
+			info.album_name = cursor.getString(cursor
+					.getColumnIndex(Albums.ALBUM));
+			Log.e("MusicUtils", "---->> info.album_name " + info.album_name);
+			info.album_id = cursor.getInt(cursor.getColumnIndex(Albums._ID));
+			Log.e("MusicUtils", "---->> info.album_id " + info.album_id);
+			info.number_of_songs = cursor.getInt(cursor
+					.getColumnIndex(Albums.NUMBER_OF_SONGS));
+			Log.e("MusicUtils", "---->> info.number_of_songs " + info.number_of_songs);
+			info.album_art = cursor.getString(cursor
+					.getColumnIndex(Albums.ALBUM_ART));
+			Log.e("MusicUtils", "---->> info.album_art " + info.album_art);
 			list.add(info);
 		}
 		cursor.close();
@@ -212,8 +224,12 @@ public class MusicUtils {
 			List<FolderInfo> list = new ArrayList<FolderInfo>();
 			while(cursor.moveToNext()) {
 				FolderInfo info = new FolderInfo();
-				info.folder_name = cursor.getString(cursor.getColumnIndex("folder_name"));
-				info.folder_path = cursor.getString(cursor.getColumnIndex("folder_path"));
+				String filePath = cursor.getString(cursor
+						.getColumnIndex(MediaStore.Files.FileColumns.DATA));
+				info.folder_path = filePath.substring(0,
+						filePath.lastIndexOf(File.separator));
+				info.folder_name = info.folder_path.substring(info.folder_path
+						.lastIndexOf(File.separator) + 1);
 				list.add(info);
 			}
 			cursor.close();
@@ -224,8 +240,10 @@ public class MusicUtils {
 		List<ArtistInfo> list = new ArrayList<ArtistInfo>();
 		while(cursor.moveToNext()) {
 			ArtistInfo info = new ArtistInfo();
-			info.artist_name = cursor.getString(cursor.getColumnIndex("artist_name"));
-			info.number_of_tracks = cursor.getInt(cursor.getColumnIndex("number_of_tracks"));
+			info.artist_name = cursor.getString(cursor
+					.getColumnIndex(MediaStore.Audio.Artists.ARTIST));
+			info.number_of_tracks = cursor.getInt(cursor
+					.getColumnIndex(MediaStore.Audio.Artists.NUMBER_OF_TRACKS));
 			list.add(info);
 		}
 		cursor.close();
@@ -234,21 +252,31 @@ public class MusicUtils {
 	
 	public static List<MusicInfo> getMusicList(Cursor cursor){
 		List<MusicInfo> list = new ArrayList<MusicInfo>();
-		while(cursor.moveToNext())
-		{
+	
+		while (cursor.moveToNext()) {
 			MusicInfo music = new MusicInfo();
-			music._id = cursor.getInt(cursor.getColumnIndex("_id"));
-			music.songid = cursor.getInt(cursor.getColumnIndex("songid"));
-			music.albumid = cursor.getInt(cursor.getColumnIndex("albumid"));
-			music.duration = cursor.getInt(cursor.getColumnIndex("duration"));
-			music.musicName = cursor.getString(cursor.getColumnIndex("musicname"));
-			music.artist = cursor.getString(cursor.getColumnIndex("artist"));
-			music.data = cursor.getString(cursor.getColumnIndex("data"));
-			music.folder = cursor.getString(cursor.getColumnIndex("folder"));
-			music.musicNameKey = cursor.getString(cursor.getColumnIndex("musicnamekey"));
-			music.artistKey = cursor.getString(cursor.getColumnIndex("artistkey"));
+			music.songid = cursor.getInt(cursor
+					.getColumnIndex(MediaStore.Audio.Media._ID));
+			music.albumid = cursor.getInt(cursor
+					.getColumnIndex(MediaStore.Audio.Media.ALBUM_ID));
+			music.duration = cursor.getInt(cursor
+					.getColumnIndex(MediaStore.Audio.Media.DURATION));
+			music.musicName = cursor.getString(cursor
+					.getColumnIndex(MediaStore.Audio.Media.TITLE));
+			music.artist = cursor.getString(cursor
+					.getColumnIndex(MediaStore.Audio.Media.ARTIST));
+			
+			String filePath = cursor.getString(cursor
+					.getColumnIndex(MediaStore.Audio.Media.DATA));
+			music.data = filePath;
+			String folderPath = filePath.substring(0,
+					filePath.lastIndexOf(File.separator));
+			music.folder = folderPath;
+			music.musicNameKey = StringHelper.getPingYin(music.musicName);
+			music.artistKey = StringHelper.getPingYin(music.artist);
 			list.add(music);
 		}
+	
 		cursor.close();
 		return list;
 	}
